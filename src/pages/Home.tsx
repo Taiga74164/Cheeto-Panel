@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Check, Loader, Sparkles, Syringe, X } from "lucide-react";
+import * as Checkbox from "@radix-ui/react-checkbox";
 
 export default function Home() {
     const [dllPath, setDllPath] = useState("");
@@ -37,7 +38,7 @@ export default function Home() {
             const response = await invoke<string>("inject_dll_by_name", {
                 processName: "BlueArchive.exe",
                 dllPath: path,
-                usePipeMode: false,
+                usePipeMode: usePipeMode,
             });
             setStatus(`DLL injected successfully: ${response}`);
             console.log("DLL injection response:", response);
@@ -80,6 +81,21 @@ export default function Home() {
                                 className="input-modern w-full px-4 py-3 rounded-lg text-mirage-100 placeholder-mirage-400 focus:outline-none"
                                 disabled={loading}
                             />
+
+                            <label className="flex items-center space-x-2 text-mirage-300 text-sm">
+                                <Checkbox.Root
+                                    className="w-5 h-5 rounded bg-mirage-800 border border-mirage-600 flex items-center justify-center data-[state=checked]:bg-mirage-600"
+                                    checked={usePipeMode}
+                                    onCheckedChange={(checked) => setUsePipeMode(!!checked)}
+                                    disabled={loading}
+                                >
+                                    <Checkbox.Indicator>
+                                        <Check className="w-3 h-3 text-white" />
+                                    </Checkbox.Indicator>
+                                </Checkbox.Root>
+                                <span>Use Pipe Mode</span>
+                            </label>
+
                             <button
                                 type="submit"
                                 disabled={loading}

@@ -49,6 +49,7 @@ body {
         0 10px 30px rgba(0, 0, 0, 0.08),
         inset 0 2px 4px rgba(255, 255, 255, 0.15),
         inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-modern {
@@ -93,7 +94,14 @@ body {
     overflow: auto;
 }
 
-h1, h2, h3, h4, h5, h6, span, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+p {
     pointer-events: none;
     user-select: none;
 }
