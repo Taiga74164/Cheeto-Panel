@@ -81,3 +81,19 @@ body {
         0 0 0 3px rgba(65, 115, 182, 0.1),
         inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-content {
+    flex: 1;
+    overflow: auto;
+}
+
+h1, h2, h3, h4, h5, h6, span, p {
+    pointer-events: none;
+    user-select: none;
+}

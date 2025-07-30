@@ -6,6 +6,7 @@ export default function Home() {
     const [dllPath, setDllPath] = useState("");
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState("");
+    const [usePipeMode, setUsePipeMode] = useState(true);
 
     // TODO: use checkbox later
     async function toggleCheat(enabled: boolean) {
@@ -36,7 +37,7 @@ export default function Home() {
             const response = await invoke<string>("inject_dll_by_name", {
                 processName: "BlueArchive.exe",
                 dllPath: path,
-                usePipeMode: true,
+                usePipeMode: false,
             });
             setStatus(`DLL injected successfully: ${response}`);
             console.log("DLL injection response:", response);
@@ -117,24 +118,6 @@ export default function Home() {
                                     <>
                                         <Check className="w-5 h-5 mr-2" />
                                         Enable Instant Win
-                                    </>
-                                )}
-                            </button>
-
-                            <button
-                                onClick={() => toggleCheat(false)}
-                                disabled={loading}
-                                className="w-full px-4 py-3 rounded-lg text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 border border-red-500/20 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
-                            >
-                                {loading ? (
-                                    <span className="flex items-center justify-center">
-                                        <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
-                                        Processing...
-                                    </span>
-                                ) : (
-                                    <>
-                                        <X className="w-5 h-5 mr-2" />
-                                        Disable Instant Win
                                     </>
                                 )}
                             </button>
