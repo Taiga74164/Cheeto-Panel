@@ -38,9 +38,3 @@ pub async fn inject_dll_by_name(process_name: String, dll_path: String, use_pipe
         dll_path, process_name, process_id
     ))
 }
-
-#[tauri::command]
-pub async fn find_process_by_name(process_name: String) -> Result<u32, String> {
-    let pid = ProcessUtils::get_pid(&process_name)?;
-    Ok(pid)
-}

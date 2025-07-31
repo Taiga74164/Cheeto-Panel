@@ -17,7 +17,8 @@
         "height": 600,
         "decorations": false,
         "titleBarStyle": "Overlay",
-        "center": true
+        "center": true,
+        "devtools": false
       }
     ],
     "security": {

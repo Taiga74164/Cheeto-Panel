@@ -1,5 +1,6 @@
 use crate::error::AppError;
 use crate::utils::windows_utils::get_last_windows_error;
+use serde::Serialize;
 use winapi::um::{
     handleapi::{CloseHandle, INVALID_HANDLE_VALUE},
     tlhelp32::{
@@ -63,4 +64,11 @@ impl ProcessUtils {
 
         Ok(handle)
     }
+}
+
+#[derive(Serialize)]
+pub struct ProcessInfo {
+    pub name: String,
+    pub pid: u32,
+    pub is_running: bool,
 }

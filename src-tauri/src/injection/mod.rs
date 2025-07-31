@@ -3,5 +3,5 @@ pub mod process_utils;
 pub mod shared_memory;
 
 pub use dll_injector::DllInjector;
-pub use process_utils::ProcessUtils;
+pub use process_utils::*;
 pub use shared_memory::SharedMemoryFlag;

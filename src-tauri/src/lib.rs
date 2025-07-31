@@ -13,7 +13,9 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             send_feature_command,
             inject_dll_by_name,
-            find_process_by_name
+            find_process_by_name,
+            is_process_running,
+            get_process_info
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

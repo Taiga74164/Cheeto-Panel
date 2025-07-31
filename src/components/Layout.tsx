@@ -1,5 +1,5 @@
 import React from "react";
-import TitleBar from "./TitleBar.tsx";
+import TitleBar from "./ui/TitleBar.tsx";
 
 interface LayoutProps {
     children: React.ReactNode;
