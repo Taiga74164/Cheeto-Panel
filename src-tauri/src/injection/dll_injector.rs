@@ -39,40 +39,46 @@ impl DllInjector {
         }
 
         let dll_path_bytes = dll_path.as_bytes_with_nul();
-        let alloc_mem = unsafe { VirtualAllocEx(
-            h_proc,
-            null_mut(),
-            dll_path_bytes.len(),
-            MEM_COMMIT | MEM_RESERVE,
-            PAGE_READWRITE,
-        ) };
+        let alloc_mem = unsafe {
+            VirtualAllocEx(
+                h_proc,
+                null_mut(),
+                dll_path_bytes.len(),
+                MEM_COMMIT | MEM_RESERVE,
+                PAGE_READWRITE,
+            )
+        };
 
         if alloc_mem.is_null() {
             return Err(get_last_windows_error());
         }
 
-        let write_result = unsafe { WriteProcessMemory(
-            h_proc,
-            alloc_mem,
-            dll_path.as_ptr() as *const _,
-            dll_path_bytes.len(),
-            null_mut(),
-        ) };
+        let write_result = unsafe {
+            WriteProcessMemory(
+                h_proc,
+                alloc_mem,
+                dll_path.as_ptr() as *const _,
+                dll_path_bytes.len(),
+                null_mut(),
+            )
+        };
 
         if write_result == 0 {
             unsafe { VirtualFreeEx(h_proc, alloc_mem, 0, MEM_RELEASE) };
             return Err(get_last_windows_error());
         }
 
-        let h_thread = unsafe { CreateRemoteThread(
-            h_proc,
-            null_mut(),
-            0,
-            Some(std::mem::transmute(load_lib)),
-            alloc_mem,
-            0,
-            null_mut(),
-        ) };
+        let h_thread = unsafe {
+            CreateRemoteThread(
+                h_proc,
+                null_mut(),
+                0,
+                Some(std::mem::transmute(load_lib)),
+                alloc_mem,
+                0,
+                null_mut(),
+            )
+        };
 
         if h_thread.is_null() {
             unsafe { VirtualFreeEx(h_proc, alloc_mem, 0, MEM_RELEASE) };

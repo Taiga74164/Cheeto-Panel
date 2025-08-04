@@ -15,7 +15,9 @@ pub fn run() {
             inject_dll_by_name,
             find_process_by_name,
             is_process_running,
-            get_process_info
+            get_process_info,
+            is_module_loaded,
+            unload_remote_module
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

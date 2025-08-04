@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Check, Syringe } from "lucide-react";
+import { Check, Syringe, X } from "lucide-react";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { InjectionConfig } from "../types";
 import { useProcMon } from "../hooks/useProcMon.ts";
@@ -7,10 +7,11 @@ import { useInjector } from "../hooks/useInjector.ts";
 import { StatusIndicator } from "../components/ui/StatusIndicator.tsx";
 
 interface HomeProps {
-    onInjectionSuccess: () => void;
+    onInjectionSuccess: (moduleName: string) => void;
+    loadedModuleName?: string;
 }
 
-export default function Home({ onInjectionSuccess }: HomeProps) {
+export default function Home({ onInjectionSuccess, loadedModuleName }: HomeProps) {
     const [injectionConfig, setInjectionConfig] = useState<InjectionConfig>({
         dllPath: "",
         usePipeMode: false,
@@ -18,11 +19,11 @@ export default function Home({ onInjectionSuccess }: HomeProps) {
     const [status, setStatus] = useState("");
 
     const { processStatus } = useProcMon("BlueArchive.exe");
-    const { injectDLL, isLoading } = useInjector();
+    const { injectDLL, unloadDLL, isLoading, isUnloading } = useInjector();
 
     const getStatusIndicatorProps = () => {
-        if (isLoading) {
-            return { status: "loading" as const, message: "Checking process..." };
+        if (isLoading || isUnloading) {
+            return { status: "loading" as const, message: "Processing..." };
         }
         if (processStatus.isFound) {
             return {
@@ -44,14 +45,30 @@ export default function Home({ onInjectionSuccess }: HomeProps) {
         try {
             const rsp = await injectDLL(processStatus.name, injectionConfig);
             setStatus(`Success: ${rsp}`);
-            onInjectionSuccess();
+
+            const moduleName = injectionConfig.dllPath.split("\\").pop() || injectionConfig.dllPath;
+            onInjectionSuccess(moduleName);
         } catch (error) {
             setStatus(`Error: ${error}`);
             console.error("DLL Injection failed:", error);
         }
     };
 
-    const canInject = processStatus.isFound && injectionConfig.dllPath.trim() && !isLoading;
+    const handleUnload = async () => {
+        if (!processStatus.isFound || !loadedModuleName) return;
+
+        setStatus("");
+        try {
+            await unloadDLL(processStatus.name, loadedModuleName);
+            setStatus(`Success: DLL '${loadedModuleName}' unloaded successfully`);
+        } catch (error) {
+            setStatus(`Error: ${error}`);
+            console.error("DLL Unload failed:", error);
+        }
+    };
+
+    const canInject = processStatus.isFound && injectionConfig.dllPath.trim() && !isLoading && !isUnloading;
+    const canUnload = processStatus.isFound && loadedModuleName && !isLoading && !isUnloading;
 
     return (
         <div className="w-full max-w-md mx-auto">
@@ -68,7 +85,7 @@ export default function Home({ onInjectionSuccess }: HomeProps) {
                     <StatusIndicator {...getStatusIndicatorProps()} />
                 </div>
 
-                <div>
+                <div className="mb-6">
                     <h2 className="text-lg font-semibold text-mirage-100 mb-3 flex items-center">
                         <Syringe className="w-5 h-5 mr-2 text-mirage-400" />
                         DLL Injection
@@ -87,7 +104,7 @@ export default function Home({ onInjectionSuccess }: HomeProps) {
                             }
                             placeholder="Enter DLL path..."
                             className="input-modern w-full px-4 py-3 rounded-lg text-mirage-100 placeholder-mirage-400 focus:outline-none"
-                            disabled={isLoading}
+                            disabled={isLoading || isUnloading}
                         />
 
                         <label className="flex items-center space-x-2 text-mirage-300 text-sm">
@@ -100,7 +117,7 @@ export default function Home({ onInjectionSuccess }: HomeProps) {
                                         usePipeMode: !!checked,
                                     }))
                                 }
-                                disabled={isLoading}
+                                disabled={isLoading || isUnloading}
                             >
                                 <Checkbox.Indicator>
                                     <Check className="w-3 h-3 text-white" />
@@ -118,6 +135,28 @@ export default function Home({ onInjectionSuccess }: HomeProps) {
                         </button>
                     </form>
                 </div>
+
+                {loadedModuleName && (
+                    <div className="border-t border-mirage-600 pt-6">
+                        <h2 className="text-lg font-semibold text-mirage-100 mb-3 flex items-center">
+                            <X className="w-5 h-5 mr-2 text-mirage-400" />
+                            Loaded Module
+                        </h2>
+                        
+                        <div className="bg-mirage-800/50 rounded-lg p-4 mb-4">
+                            <p className="text-mirage-300 text-sm mb-2">Currently loaded:</p>
+                            <p className="text-mirage-100 font-medium">{loadedModuleName}</p>
+                        </div>
+
+                        <button
+                            onClick={handleUnload}
+                            disabled={!canUnload}
+                            className="btn-modern w-full px-4 py-3 rounded-lg text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-red-600 hover:bg-red-700"
+                        >
+                            {isUnloading ? "Unloading..." : "Unload DLL"}
+                        </button>
+                    </div>
+                )}
             </div>
 
             {status && (

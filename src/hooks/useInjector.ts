@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 
 export const useInjector = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isUnloading, setIsUnloading] = useState(false);
 
     const injectDLL = useCallback(async (processName: string, config: InjectionConfig): Promise<string> => {
         setIsLoading(true);
@@ -19,5 +20,28 @@ export const useInjector = () => {
         }
     }, []);
 
-    return { injectDLL, isLoading };
+    const unloadDLL = useCallback(async (processName: string, moduleName: string): Promise<void> => {
+        setIsUnloading(true);
+        try {
+            await invoke("unload_remote_module", {
+                processName,
+                moduleName,
+            });
+        } finally {
+            setIsUnloading(false);
+        }
+    }, []);
+
+    const isModuleLoaded = useCallback(async (processName: string, moduleName: string): Promise<boolean> => {
+        try {
+            return await invoke<boolean>("is_module_loaded", {
+                processName,
+                moduleName,
+            });
+        } catch {
+            return false;
+        }
+    }, []);
+
+    return { injectDLL, unloadDLL, isModuleLoaded, isLoading, isUnloading };
 };

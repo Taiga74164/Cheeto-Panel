@@ -4,7 +4,7 @@ use std::ptr;
 use winapi::um::{
     handleapi::{CloseHandle, INVALID_HANDLE_VALUE},
     memoryapi::{MapViewOfFile, UnmapViewOfFile, FILE_MAP_WRITE},
-    winbase::{CreateFileMappingA},
+    winbase::CreateFileMappingA,
     winnt::{HANDLE, PAGE_READWRITE},
 };
 
@@ -83,8 +83,8 @@ impl SharedMemoryFlag {
 
             self.view_ptr = std::ptr::null_mut();
         }
-        
-        if !self.map_handle.is_null() || self.map_handle != INVALID_HANDLE_VALUE{
+
+        if !self.map_handle.is_null() || self.map_handle != INVALID_HANDLE_VALUE {
             unsafe {
                 CloseHandle(self.map_handle);
             }

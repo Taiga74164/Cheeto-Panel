@@ -1,5 +1,5 @@
-use crate::ipc::{NamedPipe};
 use crate::injection::{DllInjector, ProcessUtils, SharedMemoryFlag};
+use crate::ipc::NamedPipe;
 use winapi::um::winnt::PROCESS_ALL_ACCESS;
 
 #[tauri::command]
@@ -22,7 +22,11 @@ pub async fn send_feature_command(feature: String, enable: bool) -> Result<Strin
 }
 
 #[tauri::command]
-pub async fn inject_dll_by_name(process_name: String, dll_path: String, use_pipe_mode: bool) -> Result<String, String> {
+pub async fn inject_dll_by_name(
+    process_name: String,
+    dll_path: String,
+    use_pipe_mode: bool,
+) -> Result<String, String> {
     let process_id = ProcessUtils::get_pid(&process_name)?;
 
     let h_process = ProcessUtils::open_process(process_id, PROCESS_ALL_ACCESS)?;
