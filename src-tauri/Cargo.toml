@@ -31,3 +31,4 @@ winapi = { version = "0.3", features = [
     "tlhelp32"
 ] }
 thiserror = "2"
+tauri-plugin-dialog = "2.3.3"
