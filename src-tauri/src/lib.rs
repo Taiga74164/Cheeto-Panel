@@ -1,3 +1,4 @@
+use tauri::Listener;
 use tauri_commands::*;
 
 pub mod error;
@@ -5,7 +6,7 @@ pub mod injection;
 pub mod ipc;
 pub mod tauri_commands;
 pub mod utils;
-
+use tauri::Manager;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -20,6 +21,15 @@ pub fn run() {
             is_module_loaded,
             unload_remote_module
             ])
-        .run(tauri::generate_context!())
+        .setup(|app| {
+             let main_window = app.get_webview_window("main").unwrap();
+
+             let win = main_window.clone();
+             app.listen("frontend-ready", move |_| {
+                 let _ = win.show();
+             });
+         
+             Ok(())
+        }).run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
