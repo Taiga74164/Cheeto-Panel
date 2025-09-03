@@ -1,7 +1,7 @@
 use std::ptr::null_mut;
 
-use crate::utils::windows_utils::{create_cstring, get_last_windows_error};
 use crate::error::AppError;
+use crate::utils::windows_utils::{create_cstring, get_last_windows_error};
 use serde::Serialize;
 use winapi::shared::winerror::WAIT_TIMEOUT;
 use winapi::um::libloaderapi::GetModuleHandleA;
@@ -13,8 +13,8 @@ use winapi::{
     um::{
         handleapi::{CloseHandle, INVALID_HANDLE_VALUE},
         tlhelp32::{
-            CreateToolhelp32Snapshot, Module32First, Module32Next, Process32First, Process32Next,
-            MODULEENTRY32, PROCESSENTRY32, TH32CS_SNAPPROCESS,
+            CreateToolhelp32Snapshot, MODULEENTRY32, Module32First, Module32Next, PROCESSENTRY32,
+            Process32First, Process32Next, TH32CS_SNAPPROCESS,
         },
         winnt::HANDLE,
     },
@@ -147,8 +147,7 @@ impl ProcessUtils {
         }
 
         let free_library_name = create_cstring("FreeLibrary")?;
-        let free_library_addr =
-            unsafe { GetProcAddress(h_kernel32, free_library_name.as_ptr()) };
+        let free_library_addr = unsafe { GetProcAddress(h_kernel32, free_library_name.as_ptr()) };
         if free_library_addr.is_null() {
             unsafe { CloseHandle(process_handle) };
             return Err(AppError::Process {

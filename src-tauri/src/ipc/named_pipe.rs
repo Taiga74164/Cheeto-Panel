@@ -1,10 +1,10 @@
-﻿use crate::error::AppError;
+use crate::error::AppError;
 use crate::utils::windows_utils::get_last_windows_error;
 use std::{ffi::OsStr, os::windows::ffi::OsStrExt, ptr, time::Duration};
 use winapi::{
     shared::winerror::ERROR_PIPE_BUSY,
     um::{
-        fileapi::{CreateFileW, FlushFileBuffers, ReadFile, WriteFile, OPEN_EXISTING},
+        fileapi::{CreateFileW, FlushFileBuffers, OPEN_EXISTING, ReadFile, WriteFile},
         handleapi::{CloseHandle, INVALID_HANDLE_VALUE},
         namedpipeapi::SetNamedPipeHandleState,
         winbase::PIPE_READMODE_MESSAGE,

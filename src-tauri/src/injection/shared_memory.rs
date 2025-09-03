@@ -3,7 +3,7 @@ use crate::utils::windows_utils::{create_cstring, get_last_windows_error};
 use std::ptr;
 use winapi::um::{
     handleapi::{CloseHandle, INVALID_HANDLE_VALUE},
-    memoryapi::{MapViewOfFile, UnmapViewOfFile, FILE_MAP_WRITE},
+    memoryapi::{FILE_MAP_WRITE, MapViewOfFile, UnmapViewOfFile},
     winbase::CreateFileMappingA,
     winnt::{HANDLE, PAGE_READWRITE},
 };

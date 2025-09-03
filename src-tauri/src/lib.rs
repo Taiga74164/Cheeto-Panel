@@ -10,6 +10,7 @@ use tauri::Manager;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
@@ -20,16 +21,17 @@ pub fn run() {
             get_process_info,
             is_module_loaded,
             unload_remote_module
-            ])
+        ])
         .setup(|app| {
-             let main_window = app.get_webview_window("main").unwrap();
+            let main_window = app.get_webview_window("main").unwrap();
 
-             let win = main_window.clone();
-             app.listen("frontend-ready", move |_| {
-                 let _ = win.show();
-             });
-         
-             Ok(())
-        }).run(tauri::generate_context!())
+            let win = main_window.clone();
+            app.listen("frontend-ready", move |_| {
+                let _ = win.show();
+            });
+
+            Ok(())
+        })
+        .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

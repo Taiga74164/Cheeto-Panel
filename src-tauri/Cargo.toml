@@ -32,3 +32,4 @@ winapi = { version = "0.3", features = [
 ] }
 thiserror = "2"
 tauri-plugin-dialog = "2.3.3"
+tauri-plugin-store = "2"
