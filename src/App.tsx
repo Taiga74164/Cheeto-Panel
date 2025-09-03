@@ -34,24 +34,21 @@ function AppRoutes() {
         <Layout>
             <main className="p-4">
                 <Routes>
-                    <Route 
-                        path="/" 
+                    <Route
+                        path="/"
                         element={
-                            <Home 
-                                onInjectionSuccess={handleInjectionSuccess} 
-                                loadedModuleName={loadedModuleName}
-                            />
-                        } 
+                            <Home onInjectionSuccess={handleInjectionSuccess} loadedModuleName={loadedModuleName} />
+                        }
                     />
-                    <Route 
-                        path="/features" 
+                    <Route
+                        path="/features"
                         element={
-                            <Features 
+                            <Features
                                 onBackToHome={handleBackToHome}
                                 loadedModuleName={loadedModuleName}
                                 onUnloadSuccess={handleUnloadSuccess}
                             />
-                        } 
+                        }
                     />
                 </Routes>
             </main>

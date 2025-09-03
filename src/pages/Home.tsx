@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Check, Syringe, X } from "lucide-react";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { InjectionConfig } from "../types";
 import { useProcMon } from "../hooks/useProcMon.ts";
 import { useInjector } from "../hooks/useInjector.ts";
 import { StatusIndicator } from "../components/ui/StatusIndicator.tsx";
+import { open } from "@tauri-apps/plugin-dialog";
+import { LazyStore } from "@tauri-apps/plugin-store";
 
 interface HomeProps {
     onInjectionSuccess: (moduleName: string) => void;
@@ -20,6 +22,21 @@ export default function Home({ onInjectionSuccess, loadedModuleName }: HomeProps
 
     const { processStatus } = useProcMon("BlueArchive.exe");
     const { injectDLL, unloadDLL, isLoading, isUnloading } = useInjector();
+
+    const store = new LazyStore("ba-cheeto-app-config.json");
+
+    useEffect(() => {
+        const loadConfig = async () => {
+            const savedConfig = await store.get<string>("lastDllPath");
+            if (savedConfig) {
+                setInjectionConfig((prev) => ({
+                    ...prev,
+                    dllPath: savedConfig,
+                }));
+            }
+        };
+        loadConfig();
+    }, []);
 
     const getStatusIndicatorProps = () => {
         if (isLoading || isUnloading) {
@@ -92,20 +109,45 @@ export default function Home({ onInjectionSuccess, loadedModuleName }: HomeProps
                     </h2>
 
                     <form onSubmit={handleInjection} className="space-y-4">
-                        <input
-                            type="text"
-                            id="dll-path"
-                            value={injectionConfig.dllPath}
-                            onChange={(e) =>
-                                setInjectionConfig((prev) => ({
-                                    ...prev,
-                                    dllPath: e.target.value,
-                                }))
-                            }
-                            placeholder="Enter DLL path..."
-                            className="input-modern w-full px-4 py-3 rounded-lg text-mirage-100 placeholder-mirage-400 focus:outline-none"
-                            disabled={isLoading || isUnloading}
-                        />
+                        <div className="flex space-x-2">
+                            <input
+                                type="text"
+                                id="dll-path"
+                                value={injectionConfig.dllPath}
+                                readOnly
+                                placeholder="Select DLL path..."
+                                className="input-modern flex-1 px-4 py-3 rounded-lg text-mirage-100 placeholder-mirage-400 focus:outline-none"
+                                disabled={isLoading || isUnloading}
+                            />
+
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    const file = await open({
+                                        multiple: false,
+                                        directory: false,
+                                        filters: [
+                                            {
+                                                name: "DLL file",
+                                                extensions: ["dll"],
+                                            },
+                                        ],
+                                    });
+                                    if (file) {
+                                        setInjectionConfig((prev) => ({
+                                            ...prev,
+                                            dllPath: file as string,
+                                        }));
+                                        await store.set("lastDllPath", file as string);
+                                        await store.save();
+                                    }
+                                }}
+                                className="btn-modern px-4 py-3 rounded-lg text-white font-medium"
+                                disabled={isLoading || isUnloading}
+                            >
+                                Browse
+                            </button>
+                        </div>
 
                         <label className="flex items-center space-x-2 text-mirage-300 text-sm">
                             <Checkbox.Root
@@ -136,13 +178,13 @@ export default function Home({ onInjectionSuccess, loadedModuleName }: HomeProps
                     </form>
                 </div>
 
-                {loadedModuleName && (
+                {canUnload && (
                     <div className="border-t border-mirage-600 pt-6">
                         <h2 className="text-lg font-semibold text-mirage-100 mb-3 flex items-center">
                             <X className="w-5 h-5 mr-2 text-mirage-400" />
                             Loaded Module
                         </h2>
-                        
+
                         <div className="bg-mirage-800/50 rounded-lg p-4 mb-4">
                             <p className="text-mirage-300 text-sm mb-2">Currently loaded:</p>
                             <p className="text-mirage-100 font-medium">{loadedModuleName}</p>

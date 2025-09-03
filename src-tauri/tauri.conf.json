@@ -18,7 +18,8 @@
         "decorations": false,
         "titleBarStyle": "Overlay",
         "center": true,
-        "devtools": false
+        "devtools": false,
+        "visible": false
       }
     ],
     "security": {

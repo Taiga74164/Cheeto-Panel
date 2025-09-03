@@ -20,7 +20,6 @@ export default function Features({ onBackToHome, loadedModuleName, onUnloadSucce
         }
     }, [processStatus.isFound, checked, onBackToHome]);
 
-
     async function handleUnload() {
         if (!processStatus.isFound || !loadedModuleName) return;
 
@@ -35,7 +34,7 @@ export default function Features({ onBackToHome, loadedModuleName, onUnloadSucce
     }
 
     // TODO: Get all features from feature base
-    
+
     return (
         <div className="w-full max-w-6xl mx-auto">
             <div className="mb-6">
@@ -70,17 +69,13 @@ export default function Features({ onBackToHome, loadedModuleName, onUnloadSucce
                             <p className="text-sm text-red-800">{error}</p>
                         </div>
                         <div className="ml-auto pl-3">
-                            <button
-                                onClick={() => setError("")}
-                                className="text-red-400 hover:text-red-600"
-                            >
+                            <button onClick={() => setError("")} className="text-red-400 hover:text-red-600">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
                     </div>
                 </div>
             )}
-
         </div>
     );
 }

@@ -1,6 +1,4 @@
-use winapi::um::winnt::{
-    PROCESS_QUERY_INFORMATION, PROCESS_VM_READ,
-};
+use winapi::um::winnt::{PROCESS_QUERY_INFORMATION, PROCESS_VM_READ};
 
 use crate::injection::{ProcessInfo, ProcessUtils};
 
