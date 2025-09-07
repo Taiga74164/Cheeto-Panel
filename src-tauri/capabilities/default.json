@@ -15,6 +15,7 @@
     "core:window:allow-toggle-maximize",
     "core:window:allow-close",
     "dialog:default",
-    "store:default"
+    "store:default",
+    "prevent-default:default"
   ]
 }
