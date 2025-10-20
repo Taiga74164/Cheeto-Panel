@@ -17,7 +17,7 @@ pub struct NamedPipe {
 }
 
 impl NamedPipe {
-    pub const PIPE_NAME: &'static str = r"\\.\pipe\cunny_pipe00";
+    pub const PIPE_NAME: &'static str = r"\\.\pipe\pipe00";
 
     pub fn connect(pipe_name: &str) -> Result<Self, AppError> {
         let pipe_name_wide: Vec<u16> = OsStr::new(pipe_name)

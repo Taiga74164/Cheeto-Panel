@@ -20,10 +20,10 @@ export default function Home({ onInjectionSuccess, loadedModuleName }: HomeProps
     });
     const [status, setStatus] = useState("");
 
-    const { processStatus } = useProcMon("BlueArchive.exe");
+    const { processStatus } = useProcMon("Game.exe"); // TODO: Replace with process name
     const { injectDLL, unloadDLL, isLoading, isUnloading } = useInjector();
 
-    const store = new LazyStore("ba-cheeto-app-config.json");
+    const store = new LazyStore("cheeto-app-config.json");
 
     useEffect(() => {
         const loadConfig = async () => {
@@ -50,7 +50,7 @@ export default function Home({ onInjectionSuccess, loadedModuleName }: HomeProps
         }
         return {
             status: "not-found" as const,
-            message: "Process not found - Please start Blue Archive",
+            message: "Process not found - Please start your game",
         };
     };
 
@@ -93,7 +93,7 @@ export default function Home({ onInjectionSuccess, loadedModuleName }: HomeProps
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-mirage-100 to-mirage-300 bg-clip-text text-transparent mb-2">
                     BA Cheeto
                 </h1>
-                <p className="text-mirage-300 text-sm">Blue Archive Enhancement Tool</p>
+                <p className="text-mirage-300 text-sm">Cheeto Tool</p>
             </div>
 
             <div className="glass rounded-2xl p-6 mb-6">

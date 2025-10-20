@@ -10,7 +10,7 @@ interface FeaturesProps {
 }
 
 export default function Features({ onBackToHome, loadedModuleName, onUnloadSuccess }: FeaturesProps) {
-    const { processStatus, checked } = useProcMon("BlueArchive.exe");
+    const { processStatus, checked } = useProcMon("Game.exe"); // TODO: Replace with process name
     const { unloadDLL, isUnloading } = useInjector();
     const [error, setError] = useState("");
 

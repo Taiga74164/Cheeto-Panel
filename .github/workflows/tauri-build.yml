@@ -1,4 +1,4 @@
-name: Build BA Cheeto Panel 
+name: Build Cheeto Panel
 
 on:
   push:

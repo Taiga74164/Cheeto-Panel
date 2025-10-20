@@ -1,7 +1,7 @@
 [package]
-name = "ba-cheeto"
+name = "cheeto"
 version = "0.1.0"
-description = "Interface for BA-Cheeto"
+description = "Interface for Cheeto"
 authors = ["Taiga74164"]
 edition = "2024"
 
